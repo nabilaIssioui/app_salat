@@ -1,0 +1,174 @@
+body {
+  margin: 0;
+  font-family: "Arial", sans-serif;
+  direction: rtl; /* Affiche le texte de droite à gauche */
+  background-color: #121212;
+  color: white;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Partie glissable pour les jours */
+.header {
+  flex: 1.5;
+  background: url('C:/Users/HP/Downloads/mosque_image.jpg') no-repeat center/cover; /* Utilise /mosque_image.jpg pour indiquer le chemin relatif à public */
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.title {
+  font-size: 2.5rem;
+  margin: 0;
+}
+
+.time {
+  font-size: 1.5rem;
+  color: #ffd700;
+}
+
+.day-selector {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+button {
+  background-color: #FFD700;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin: 0 10px;
+}
+
+button:hover {
+  background-color: #FFCC00;
+}
+
+/* Partie centrale pour la sélection de la ville */
+.city-selector {
+  background-color: #1e1e1e;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.city-selector button {
+  background-color: #FFD700;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin: 0 10px;
+}
+
+.city-selector span {
+  font-size: 1.5rem;
+  margin: 0 20px;
+}
+
+/* Partie des horaires de prière */
+.prayer-times {
+  flex: 2;
+  background-color: #1e1e1e;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.time-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #ccc;
+  transition: background-color 0.3s;
+}
+
+.time-row:hover {
+  background-color: #f0f0f0; /* Met en évidence lorsqu'on survole */
+}
+
+.time-row.selected {
+  background-color: #dfe6fd; /* Couleur pour la ligne sélectionnée */
+  font-weight: bold;
+  color: #1a73e8; /* Optionnel : couleur du texte pour la prière sélectionnée */
+}
+
+
+/* Partie inférieure */
+.footer {
+  flex: 0.5;
+  background-color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 10px;
+  font-size: 0.9rem;
+}
+@media (max-width: 768px) {
+  .header {
+    text-align: center;
+    background-size: cover;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .day-selector span,
+  .city-selector span {
+    font-size: 1.2rem;
+  }
+
+  .time-row {
+    font-size: 1rem;
+    padding: 5px;
+  }
+
+  button {
+    font-size: 1rem;
+    padding: 5px 8px;
+  }
+
+  .footer {
+    font-size: 0.8rem;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .day-selector span,
+  .city-selector span {
+    font-size: 1rem;
+  }
+
+  .prayer-times {
+    padding: 5px;
+  }
+
+  .footer {
+    font-size: 0.7rem;
+    padding: 5px;
+  }
+}
+
