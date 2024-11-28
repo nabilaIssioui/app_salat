@@ -1,130 +1,157 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./App.css";
+import { FaMapMarkerAlt } from "react-icons/fa";
 
 function App() {
-  
-  const [prayerData, setPrayerData] = useState(null); // Initially null
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [prayerData, setPrayerData] = useState(null); 
+  const [loading, setLoading] = useState(true); 
+  const [city, setCity] = useState("..."); 
+  const [date, setDate] = useState(new Date()); 
+  const [currentPrayer, setCurrentPrayer] = useState("Fajr"); 
+  const [title, setTitle] = useState("Fajr"); 
+  const locationData = JSON.parse(localStorage.getItem('locationData'));
+
+  const fetchPrayerTimes = async (latitude, longitude, currentDate) => {
+    setLoading(true);
+    try {
+      const formattedDate = currentDate.toISOString().split("T")[0];
+      const response = await axios.get(
+        `https://api.aladhan.com/v1/timings/2024-11-27?latitude=48.8566&longitude=2.3522&method=2
+`
+      );
+      setPrayerData(response.data.data.timings);
+      setTitle(currentPrayer);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des horaires de prière :", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCityName = async (latitude, longitude) => {
+    try {
+      const response = await axios.get(
+        `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=676883e20fc14b518f2e9d64620acb56`
+      );
+      const cityName = response.data.results[0].components.city ||
+                       response.data.results[0].components.town ||
+                       response.data.results[0].components.village || 
+                       "Inconnu";
+      setCity(cityName);
+      const locationData = { cityName, latitude, longitude };
+      localStorage.setItem('locationData', JSON.stringify(locationData));
+    } catch (error) {
+      console.error("Erreur lors de la récupération de la ville :", error);
+      setCity("Inconnue");
+    }
+  };
+
+  const getLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          const locData = locationData || { latitude, longitude };
+          fetchPrayerTimes(locData.latitude, locData.longitude, date);
+          fetchCityName(locData.latitude, locData.longitude);
+        },
+        (error) => {
+          console.error("Erreur de géolocalisation :", error);
+          setLoading(false);
+        }
+      );
+    } else {
+      console.error("La géolocalisation n'est pas supportée par ce navigateur.");
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true); // Start loading
-      try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/getPrayers`);
-        setPrayerData(response.data); // Populate the prayer data
-        console.log  (response.data)      
-        setLoading(false); // Stop loading after data is fetched
-      } catch (error) {
-        console.error("Erreur lors de la récupération des données :", error);
-        setLoading(false); // Stop loading even if there is an error
-      }
-    };
 
-    fetchData();
-  }, []);
+    
 
-  
+    getLocation();
+  }, [date, currentPrayer]);
 
-  const [city, setCity] = useState("Casablanca");
-  const [day, setDay] = useState("Mercredi");
-  const [selectedPrayer, setSelectedPrayer] = useState(null);
-  const [title, setTitle] = useState("fajr"); // Ajout de l'état pour le titre dynamique
-
-
-  // Fonction pour changer de ville
-  // Fonction pour changer de ville
-const handleCityChange = (direction) => {
-  const cities = Object.keys(prayerData);
-  const currentCityIndex = cities.indexOf(city);
-  let newIndex = direction === "left" ? currentCityIndex - 1 : currentCityIndex + 1;
-  if (newIndex < 0) newIndex = cities.length - 1;
-  if (newIndex >= cities.length) newIndex = 0;
-  const newCity = cities[newIndex];
-  
-  setCity(newCity);
-
-  // Préserver la prière sélectionnée ou passer à une par défaut si elle n'existe pas
-  const newDay = Object.keys(prayerData[newCity])[0]; // Le premier jour par défaut
-  const newPrayer = prayerData[newCity][newDay][title] || prayerData[newCity][newDay].fajr; // Vérifie si la prière actuelle existe
-  setDay(newDay);
-  setSelectedPrayer(newPrayer);
-};
-
-// Fonction pour changer de jour
-const handleDayChange = (direction) => {
-  const days = Object.keys(prayerData[city]);
-  const currentDayIndex = days.indexOf(day);
-  let newIndex = direction === "left" ? currentDayIndex - 1 : currentDayIndex + 1;
-  if (newIndex < 0) newIndex = days.length - 1;
-  if (newIndex >= days.length) newIndex = 0;
-  const newDay = days[newIndex];
-  
-  setDay(newDay);
-
-  // Préserver la prière sélectionnée ou passer à une par défaut si elle n'existe pas
-  const newPrayer = prayerData[city][newDay][title] || prayerData[city][newDay].fajr; // Vérifie si la prière actuelle existe
-  setSelectedPrayer(newPrayer);
-};
-
-
-
-  // Fonction pour afficher l'heure de prière et mettre à jour le titre
   const handlePrayerClick = (prayer) => {
-    setSelectedPrayer(prayerData[city][day][prayer]);
-    setTitle(prayer); // Mise à jour du titre avec le nom de la prière
+    setCurrentPrayer(prayer);
+    setTitle(prayer);
   };
+
+  const handlePreviousDay = () => {
+    const previousDay = new Date(date);
+    previousDay.setDate(previousDay.getDate() - 1);
+    setDate(previousDay);
+  };
+
+  const handleNextDay = () => {
+    const nextDay = new Date(date);
+    nextDay.setDate(nextDay.getDate() + 1);
+    setDate(nextDay);
+  };
+
+  
+
+  const formattedDate = date.toLocaleDateString("fr-FR", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  const selectedPrayers = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"];
 
   return (
     <div className="container">
-      {/* Partie glissable pour les jours */}
       <div className="header">
-        <h1 className="title">{title}</h1> {/* Titre dynamique */}
-        <div className="day-selector">
-          <button onClick={() => handleDayChange("left")}>←</button>
-          <span>{day}</span>
-          <button onClick={() => handleDayChange("right")}>→</button>
+        <h1 className="title">{title}</h1>
+        <div className="location">
+          <p>
+            📍 Ville : {city}
+            <FaMapMarkerAlt
+              className="location-icon"
+              onClick={getLocation}
+              style={{ cursor: "pointer", marginLeft: "8px", color: "red" }}
+              title="Relocaliser"
+            />
+          </p>
         </div>
-        {selectedPrayer && <p className="time">{selectedPrayer}</p>}
-      </div>
-
-      {/* Partie centrale pour la sélection de la ville */}
-      <div className="city-selector">
-        <button onClick={() => handleCityChange("left")}>←</button>
-        <span>{city}</span>
-        <button onClick={() => handleCityChange("right")}>→</button>
-      </div>
-
-      {/* Partie des horaires de prière */}
-      
-
-      <div className="prayer-times">
-        {loading ? (  // Display loading while data is being fetched
-          <p>Loading prayer times...</p>
-        ) : (
-          prayerData && prayerData[city] && prayerData[city][day] ? (
-            Object.entries(prayerData[city][day]).map(([prayer, time]) => (
-              <div
-                key={prayer}
-                className={`time-row ${selectedPrayer === time ? "selected" : ""}`} // Ajouter une classe conditionnelle
-                onClick={() => handlePrayerClick(prayer)}
-              >
-                <span>{prayer}</span>
-                <span>{time}</span>
-              </div>
-            ))
-          ) : (
-            <p>No prayer times available for this city and day.</p>  // Handle empty data
-          )
+        <div className="day-selector">
+          <button className="arrow-button" onClick={handlePreviousDay}>◀</button>
+          <span>{formattedDate}</span>
+          <button className="arrow-button" onClick={handleNextDay}>▶</button>
+        </div>
+        {prayerData && currentPrayer && (
+          <p className="time">{prayerData[currentPrayer]}</p>
         )}
       </div>
 
+      <div className="prayer-times">
+        {loading ? (
+          <p>Chargement des horaires de prière...</p>
+        ) : prayerData ? (
+          <div className="prayer-row">
+            {Object.entries(prayerData)
+              .filter(([prayer]) => selectedPrayers.includes(prayer))
+              .map(([prayer, time]) => (
+                <div
+                  key={prayer}
+                  className={`time-row ${currentPrayer === prayer ? "selected" : ""}`}
+                  onClick={() => handlePrayerClick(prayer)}
+                >
+                  <span>{prayer}</span>
+                  <span>{time}</span>
+                </div>
+              ))}
+          </div>
+        ) : (
+          <p>Aucun horaire de prière disponible.</p>
+        )}
+      </div>
 
-      {/* Partie inférieure */}
       <div className="footer">
-        <p>
-          جميع الأوقات تعتمد على موقعك الحالي. قد تختلف بحسب المنطقة.
-        </p>
+        <p>جميع الأوقات تعتمد على موقعك الحالي. قد تختلف بحسب المنطقة.</p>
       </div>
     </div>
   );
