@@ -15,7 +15,7 @@ body {
 /* Partie glissable pour les jours */
 .header {
   flex: 1.5;
-  background: url('C:/Users/HP/Downloads/mosque_image.jpg') no-repeat center/cover; /* Utilise /mosque_image.jpg pour indiquer le chemin relatif à public */
+  background: url('/images/mosque_image.jpg') no-repeat center/cover;
   background-size: cover;
   display: flex;
   flex-direction: column;
