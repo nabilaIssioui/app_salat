@@ -15,7 +15,7 @@ body {
 /* Partie glissable pour les jours */
 .header {
   flex: 1.5;
-  background: url('/images/mosque_image.jpg') no-repeat center/cover;
+  background: url('/mosque_image.jpg') no-repeat center/cover;
   background-size: cover;
   display: flex;
   flex-direction: column;
