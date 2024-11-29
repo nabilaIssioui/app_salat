@@ -1,7 +1,7 @@
 body {
   margin: 0;
   font-family: "Arial", sans-serif;
-  direction: rtl; /* Affiche le texte de droite à gauche */
+  direction: rtl; /* Pour l'arabe */
   background-color: #121212;
   color: white;
 }
@@ -9,79 +9,86 @@ body {
 .container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh; /* Permet de remplir tout l'écran */
 }
 
-/* Partie glissable pour les jours */
+/* Partie supérieure */
 .header {
   flex: 1.5;
   background: url('/mosque_image.jpg') no-repeat center/cover;
-  background-size: cover;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  text-align: center;
   color: white;
   text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .title {
-  font-size: 2.5rem;
-  margin: 0;
+  font-size: 2rem;
 }
 
 .time {
   font-size: 1.5rem;
   color: #ffd700;
+  margin-top: 8px;
 }
 
 .day-selector {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  gap: 10px;
   margin-top: 10px;
 }
 
-button {
-  background-color: #FFD700;
-  border: none;
+.arrow-button {
+  background-color: #4caf50;
   color: white;
-  padding: 5px 10px;
-  font-size: 1.2rem;
-  cursor: pointer;
-  margin: 0 10px;
-}
-
-button:hover {
-  background-color: #FFCC00;
-}
-
-/* Partie centrale pour la sélection de la ville */
-.city-selector {
-  background-color: #1e1e1e;
-  padding: 20px;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
   display: flex;
+  align-items: center;
   justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.arrow-button:hover {
+  background-color: #45a049;
+}
+
+.location {
+  font-size: 1rem;
+  display: flex;
   align-items: center;
 }
 
-.city-selector button {
-  background-color: #FFD700;
-  border: none;
-  color: white;
-  padding: 5px 10px;
+.location-icon {
   font-size: 1.2rem;
+  margin-left: 8px;
   cursor: pointer;
-  margin: 0 10px;
 }
 
-.city-selector span {
-  font-size: 1.5rem;
-  margin: 0 20px;
+.prayer-times {
+  flex: 1;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* Partie des horaires de prière */
-
+.prayer-row {
+  display: flex;
+  flex-direction: column; /* Liste verticale par défaut */
+  gap: 10px; /* Espacement entre les lignes */
+  width: 100%;
+  margin-top: 20px;
+}
 
 .time-row {
   display: flex;
@@ -89,71 +96,84 @@ button:hover {
   padding: 10px;
   cursor: pointer;
   border-bottom: 1px solid #ccc;
+  background-color: #1e1e1e;
+  color: white;
+  border-radius: 6px;
   transition: background-color 0.3s;
 }
 
 .time-row:hover {
-  background-color: #f0f0f0; /* Met en évidence lorsqu'on survole */
+  background-color: #4caf50;
+  color: white;
 }
 
 .time-row.selected {
-  background-color: #dfe6fd; /* Couleur pour la ligne sélectionnée */
+  background-color: #ffd700;
+  color: black;
   font-weight: bold;
-  color: #1a73e8; /* Optionnel : couleur du texte pour la prière sélectionnée */
 }
 
-.location-icon {
-  margin-left: 8px;
+/* Section Hadith */
+.hadith {
+  background-color: #242a31;
+  color: #d2cbcb;
+  padding: 15px;
+  border-radius: 6px;
+  margin: 10px auto;
+  max-width: 95%;
+  text-align: justify;
+}
+
+.hadith h2 {
   font-size: 1.2rem;
-  color: red;
-  transition: transform 0.2s;
-}
-
-.location-icon:hover {
-  transform: scale(1.2); /* Agrandir légèrement au survol */
-}
-
-
-/* Partie inférieure */
-.footer {
-  flex: 0.5;
-  background-color: #333;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   text-align: center;
-  padding: 10px;
-  font-size: 0.9rem;
+  margin-bottom: 10px;
 }
+
+.hadith .content {
+  font-style: italic;
+  background: #32363b;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.hadith footer {
+  font-size: 0.9rem;
+  color: #999;
+  text-align: right;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-  .header {
-    text-align: center;
-    background-size: cover;
-  }
-
   .title {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
 
-  .day-selector span,
-  .city-selector span {
-    font-size: 1.2rem;
+  .time {
+    font-size: 1.4rem;
   }
 
-  .time-row {
-    font-size: 1rem;
-    padding: 5px;
+  .arrow-button {
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
   }
 
-  button {
-    font-size: 1rem;
-    padding: 5px 8px;
-  }
-
-  .footer {
-    font-size: 0.8rem;
-    padding: 10px;
-  }
+    .prayer-row {
+      flex-direction: row; /* Affichage en ligne ou grille */
+      flex-wrap: wrap;
+      gap: 10px; /* Espacement entre les colonnes */
+      justify-content: center; /* Centrer le contenu */
+    }
+  
+    .time-row {
+      flex: 1 1 calc(50% - 10px); /* Deux colonnes sur petits écrans */
+      max-width: 180px; /* Limite la largeur pour un bel alignement */
+      text-align: center;
+    }
+  
+  
+  
 }
 
 @media (max-width: 480px) {
@@ -161,91 +181,36 @@ button:hover {
     font-size: 1.5rem;
   }
 
-  .day-selector span,
-  .city-selector span {
+  .time {
+    font-size: 1.2rem;
+  }
+
+  .arrow-button {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+
+  
+  .prayer-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 5px; /* Espacement plus réduit sur très petits écrans */
+    justify-content: center;
+  }
+
+  .time-row {
+    flex: 1 1 calc(100% - 10px); /* Une seule colonne sur les écrans très étroits */
+    max-width: 100%;
+    font-size: 0.9rem;
+  }
+
+  .hadith {
+    padding: 10px;
+    font-size: 0.8rem;
+  }
+
+  .hadith h2 {
     font-size: 1rem;
   }
-
-  .prayer-times {
-    padding: 5px;
-  }
-
-  .footer {
-    font-size: 0.7rem;
-    padding: 5px;
-  }
-
-  .day-selector {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 10px;
-  }
-  
-  .arrow-button {
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .arrow-button:hover {
-    background-color: #45a049;
-  }
-  .prayer-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-top: 10px;
-  }
-  
-  .prayer-item {
-    text-align: center;
-    cursor: pointer;
-    padding: 10px;
-    background-color: #f1f1f1;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-  }
-  
-  .prayer-item:hover {
-    background-color: #4caf50;
-    color: white;
-  }
-  
-  .prayer-item.selected {
-    background-color: #4caf50;
-    color: white;
-  }
-  
-  .arrow-button {
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .arrow-button:hover {
-    background-color: #45a049;
-  }
-  
-  
 }
-

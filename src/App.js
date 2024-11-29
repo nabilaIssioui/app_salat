@@ -15,10 +15,9 @@ function App() {
   const fetchPrayerTimes = async (latitude, longitude, currentDate) => {
     setLoading(true);
     try {
-      const formattedDate = currentDate.toISOString().split("T")[0];
+      const formattedDate = currentDate.toISOString().split("T")[0]; // Formater la date en YYYY-MM-DD
       const response = await axios.get(
-        `https://api.aladhan.com/v1/timings/2024-11-27?latitude=48.8566&longitude=2.3522&method=2
-`
+        `https://api.aladhan.com/v1/timings/${formattedDate}?latitude=${latitude}&longitude=${longitude}&method=2`
       );
       setPrayerData(response.data.data.timings);
       setTitle(currentPrayer);
@@ -28,6 +27,7 @@ function App() {
       setLoading(false);
     }
   };
+  
 
   const fetchCityName = async (latitude, longitude) => {
     try {
@@ -53,7 +53,7 @@ function App() {
         (position) => {
           const { latitude, longitude } = position.coords;
           const locData = locationData || { latitude, longitude };
-          fetchPrayerTimes(locData.latitude, locData.longitude, date);
+          fetchPrayerTimes(locData.latitude, locData.longitude, date); // Utiliser la date dynamique
           fetchCityName(locData.latitude, locData.longitude);
         },
         (error) => {
@@ -66,6 +66,7 @@ function App() {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
 
@@ -108,11 +109,11 @@ function App() {
         <h1 className="title">{title}</h1>
         <div className="location">
           <p>
-            📍 Ville : {city}
+            📍 {city}
             <FaMapMarkerAlt
               className="location-icon"
               onClick={getLocation}
-              style={{ cursor: "pointer", marginLeft: "8px", color: "red" }}
+              style={{ cursor: "pointer", marginLeft: "15px", color: "red" }}
               title="Relocaliser"
             />
           </p>
@@ -150,9 +151,14 @@ function App() {
         )}
       </div>
 
-      <div className="footer">
-        <p>جميع الأوقات تعتمد على موقعك الحالي. قد تختلف بحسب المنطقة.</p>
+      <div class="hadith">
+      <h2>Hadith du jour</h2>
+      <div class="content">
+        <p>Abû Bakrah (qu'Allah l'agrée) relate que le Prophète (sur lui la paix et salut) a dit par trois fois : « Ne vous informerais-je pas des plus grands des péchés majeurs ? » Nous dîmes : « Mais si ! Ô Messager d'Allah ! » Alors, il mentionna : « L'association à Allah, la désobéissance aux parents et le faux témoignage. »</p>
+        <footer>— Rapporté par Abi Bakrah (qu'Allah l'agrée)</footer>
       </div>
+    </div>
+
     </div>
   );
 }
