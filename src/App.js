@@ -3,7 +3,7 @@ import axios from "axios";
 import "./App.css";
 import { FaMapMarkerAlt } from "react-icons/fa";
 
-function App() {
+const App = () => {
   const [prayerData, setPrayerData] = useState(null); 
   const [loading, setLoading] = useState(true); 
   const [city, setCity] = useState("..."); 
@@ -12,8 +12,10 @@ function App() {
   const [title, setTitle] = useState("Fajr"); 
   const locationData = JSON.parse(localStorage.getItem('locationData'));
 
-  
-  const fetchPrayerTimes = async (latitude, longitude, currentDate) => {
+    //utiliser lapi directement dans sécutité
+
+
+  /* const fetchPrayerTimes = async (latitude, longitude, currentDate) => {
     setLoading(true);
     try {
       const formattedDate = currentDate.toISOString().split("T")[0]; // Formater la date en YYYY-MM-DD
@@ -27,7 +29,27 @@ function App() {
     } finally {
       setLoading(false);
     }
+  }; */
+
+  //utiliser lapi avec sécurité pour n'a pas apparait sur la partie network de devtols
+
+  const fetchPrayerTimes = async (latitude, longitude, currentDate) => {
+    setLoading(true);
+    try {
+      const formattedDate = currentDate.toISOString().split("T")[0]; // Formater la date en YYYY-MM-DD
+      const response = await axios.get(
+        `http://127.0.0.1:8000/api/prayer-times?latitude=${latitude}&longitude=${longitude}&date=${formattedDate}`
+      );
+      setPrayerData(response.data.data.timings);
+      setTitle(currentPrayer);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des horaires de prière :", error);
+    } finally {
+      setLoading(false);
+    }
   };
+  
+
   
 
   const fetchCityName = async (latitude, longitude) => {
